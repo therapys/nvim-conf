@@ -18,7 +18,7 @@ vim.o.tags = "./tags;"
 -- Enale mouse mode
 vim.o.mouse = "a"
 vim.o.foldmethod = "manual"
-vim.o.autochdir = true
+-- vim.o.autochdir = true  -- Disabled: was causing nvim . to open one dir above target
 -- Sync clipboard between OS and Neovim.
 vim.o.clipboard = "unnamedplus"
 vim.o.showmode = false
