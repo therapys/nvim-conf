@@ -10,5 +10,6 @@ return {
   { import = "plugins.files" },       -- neo-tree (left)
   { import = "plugins.outline" },     -- outline.nvim (right)
   { import = "plugins.colors" },      -- onedark
+  { impoty = "plugins.agent" },
 }
 
