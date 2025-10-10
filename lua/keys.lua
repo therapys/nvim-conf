@@ -124,3 +124,55 @@ end, { desc = "LSP: References" })
 map("n", "<leader>ts", "<cmd>split | terminal<CR>", { desc = "Terminal split" })
 map("n", "<leader>tv", "<cmd>vsplit | terminal<CR>", { desc = "Terminal vsplit" })
 
+-- ======================
+-- Amp AI
+-- ======================
+map("n", "<leader>ao", function()
+  local prev_win = vim.api.nvim_get_current_win()
+  local prev_buf = vim.api.nvim_get_current_buf()
+  local prev_pos = vim.api.nvim_win_get_cursor(prev_win)
+  
+  vim.cmd("vsplit")
+  vim.cmd("wincmd l")
+  require("amp").open()
+  vim.cmd("startinsert")
+  
+  local group = vim.api.nvim_create_augroup("AmpReturnToPrev", { clear = true })
+  vim.api.nvim_create_autocmd("BufLeave", {
+    group = group,
+    buffer = vim.api.nvim_get_current_buf(),
+    once = true,
+    callback = function()
+      if vim.api.nvim_win_is_valid(prev_win) then
+        vim.api.nvim_set_current_win(prev_win)
+        if vim.api.nvim_buf_is_valid(prev_buf) then
+          vim.api.nvim_win_set_cursor(prev_win, prev_pos)
+        end
+      end
+    end,
+  })
+end, { desc = "Amp: Open in right pane" })
+
+map("v", "<leader>aa", function()
+  local _, csrow, cscol = unpack(vim.fn.getpos("'<"))
+  local _, cerow, cecol = unpack(vim.fn.getpos("'>"))
+  local lines = vim.fn.getline(csrow, cerow)
+  if #lines == 1 then
+    lines[1] = string.sub(lines[1], cscol, cecol)
+  else
+    lines[1] = string.sub(lines[1], cscol)
+    lines[#lines] = string.sub(lines[#lines], 1, cecol)
+  end
+  local code = table.concat(lines, "\n")
+  
+  vim.ui.input({ prompt = "Amp prompt: " }, function(prompt)
+    if prompt and prompt ~= "" then
+      require("amp").send_to_amp(prompt .. "\n\n```\n" .. code .. "\n```")
+    end
+  end)
+end, { desc = "Amp: Send selection with prompt" })
+
+map("v", "<leader>ai", function()
+  require("amp").send_to_amp()
+end, { desc = "Amp: Send selection to Amp" })
+
