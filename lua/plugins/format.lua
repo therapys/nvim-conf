@@ -8,6 +8,10 @@ return {
     opts = {
       formatters_by_ft = {
         python = { "black" },
+        go = { "goimports", "gofmt" },
+        json = { "jq" },
+        yaml = { "yamlfmt" },
+        ["yaml.docker-compose"] = { "prettier" },
       },
     },
   },
@@ -16,7 +20,15 @@ return {
     event = { "BufReadPost", "BufNewFile", "InsertLeave" },
     config = function()
       local lint = require("lint")
-      lint.linters_by_ft = { python = { "ruff" } }
+      lint.linters_by_ft = {
+        python = { "ruff" },
+        go = { "golangcilint" },
+      }
+      
+      -- Only add hadolint if it's available
+      if vim.fn.executable("hadolint") == 1 then
+        lint.linters_by_ft.dockerfile = { "hadolint" }
+      end
 
       local grp = vim.api.nvim_create_augroup("UserNvimLint", { clear = true })
       vim.api.nvim_create_autocmd({ "BufWritePost", "InsertLeave" }, {
@@ -26,4 +38,3 @@ return {
     end,
   },
 }
-

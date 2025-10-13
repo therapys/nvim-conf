@@ -9,6 +9,23 @@ return {
     end,
   },
 
+  {
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    dependencies = { "williamboman/mason.nvim" },
+    event = "VeryLazy",
+    opts = {
+      ensure_installed = {
+        "goimports",
+        "gofumpt",
+        "golangci-lint",
+        "hadolint",
+        "prettier",
+        "yamlfmt",
+        "jq",
+      },
+    },
+  },
+
   -- Mason bridge to ensure LSP servers are installed
   {
     "williamboman/mason-lspconfig.nvim",
@@ -17,7 +34,8 @@ return {
     opts = {
       ensure_installed = {
         "pyright", "lua_ls", "vtsls", "jsonls", "yamlls", "bashls",
-        "html", "cssls", "marksman", "dockerls", "clangd", "cmake", "gopls",
+        "html", "cssls", "marksman", "dockerls", "docker_compose_language_service",
+        "clangd", "cmake", "gopls",
       },
       automatic_installation = false,
     },
@@ -30,6 +48,9 @@ return {
   {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
+    dependencies = {
+      "b0o/schemastore.nvim",
+    },
     config = function()
       -- Base capabilities (augmented by nvim-cmp if present)
       local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -43,8 +64,17 @@ return {
       capabilities.offsetEncoding = { "utf-16" }
 
       -- Optional: keymaps etc.
-      local function on_attach(_client, _bufnr)
-        -- put buffer-local mappings here if you want
+      local function on_attach(client, _bufnr)
+        if client.server_capabilities.documentHighlightProvider then
+          vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+            buffer = _bufnr,
+            callback = vim.lsp.buf.document_highlight,
+          })
+          vim.api.nvim_create_autocmd({ "CursorMoved" }, {
+            buffer = _bufnr,
+            callback = vim.lsp.buf.clear_references,
+          })
+        end
       end
 
       -- Server-specific configs
@@ -59,19 +89,52 @@ return {
           },
         },
         vtsls = {},
-        jsonls = {},
-        yamlls = {},
+        jsonls = {
+          settings = {
+            json = {
+              schemas = require("schemastore").json.schemas(),
+              validate = { enable = true },
+            },
+          },
+        },
+        yamlls = {
+          settings = {
+            yaml = {
+              schemaStore = {
+                enable = false,
+                url = "",
+              },
+              schemas = require("schemastore").yaml.schemas(),
+              format = { enable = true },
+              validate = true,
+              hover = true,
+              completion = true,
+            },
+          },
+        },
         bashls = {},
         html = {},
         cssls = {},
         marksman = {},
         dockerls = {},
+        docker_compose_language_service = {},
         -- Force clangd to use the same offset encoding as our capabilities
         clangd = {
           cmd = { "clangd", "--offset-encoding=utf-16" },
         },
         cmake = {},
-        gopls = {},
+        gopls = {
+          settings = {
+            gopls = {
+              analyses = {
+                unusedparams = true,
+                shadow = true,
+              },
+              staticcheck = true,
+              gofumpt = true,
+            },
+          },
+        },
         -- If you add eslint later, keep it aligned:
         -- eslint = {},
       }
@@ -99,4 +162,3 @@ return {
     end,
   },
 }
-

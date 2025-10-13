@@ -50,15 +50,10 @@ map("v", "<leader>fg", function()
 end, { desc = "Telescope: Grep visual selection" })
 
 -- ======================
--- Diagnostics
+-- Diagnostics (use Trouble if available, fallback to native)
 -- ======================
-map("n", "[d", vim.diagnostic.goto_prev,         { desc = "Diagnostic: Previous" })
-map("n", "]d", vim.diagnostic.goto_next,         { desc = "Diagnostic: Next" })
-map("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Diagnostics → loclist" })
-map("n", "<leader>lo", "<cmd>lopen<CR>",         { desc = "Location list: Open" })
-map("n", "<leader>lc", "<cmd>lclose<CR>",        { desc = "Location list: Close" })
-map("n", "<leader>ln", "<cmd>lnext<CR>",         { desc = "Location list: Next" })
-map("n", "<leader>lp", "<cmd>lprev<CR>",         { desc = "Location list: Prev" })
+map("n", "[d", vim.diagnostic.goto_prev, { desc = "Diagnostic: Previous" })
+map("n", "]d", vim.diagnostic.goto_next, { desc = "Diagnostic: Next" })
 
 -- ======================
 -- Tabs
@@ -125,54 +120,71 @@ map("n", "<leader>ts", "<cmd>split | terminal<CR>", { desc = "Terminal split" })
 map("n", "<leader>tv", "<cmd>vsplit | terminal<CR>", { desc = "Terminal vsplit" })
 
 -- ======================
--- Amp AI
+-- Amp keybinds
 -- ======================
-map("n", "<leader>ao", function()
-  local prev_win = vim.api.nvim_get_current_win()
-  local prev_buf = vim.api.nvim_get_current_buf()
-  local prev_pos = vim.api.nvim_win_get_cursor(prev_win)
-  
-  vim.cmd("vsplit")
-  vim.cmd("wincmd l")
-  require("amp").open()
-  vim.cmd("startinsert")
-  
-  local group = vim.api.nvim_create_augroup("AmpReturnToPrev", { clear = true })
-  vim.api.nvim_create_autocmd("BufLeave", {
-    group = group,
-    buffer = vim.api.nvim_get_current_buf(),
-    once = true,
-    callback = function()
-      if vim.api.nvim_win_is_valid(prev_win) then
-        vim.api.nvim_set_current_win(prev_win)
-        if vim.api.nvim_buf_is_valid(prev_buf) then
-          vim.api.nvim_win_set_cursor(prev_win, prev_pos)
-        end
-      end
-    end,
-  })
-end, { desc = "Amp: Open in right pane" })
+map("v", "<leader>ap", "<cmd>AmpPromptSelection<CR>", { desc = "Amp: Add selection to prompt" })
+map("v", "<leader>ar", "<cmd>AmpPromptRef<CR>", { desc = "Amp: Add file ref to prompt" })
+map("n", "<leader>ar", "<cmd>AmpPromptRef<CR>", { desc = "Amp: Add file ref to prompt" })
 
-map("v", "<leader>aa", function()
-  local _, csrow, cscol = unpack(vim.fn.getpos("'<"))
-  local _, cerow, cecol = unpack(vim.fn.getpos("'>"))
-  local lines = vim.fn.getline(csrow, cerow)
-  if #lines == 1 then
-    lines[1] = string.sub(lines[1], cscol, cecol)
-  else
-    lines[1] = string.sub(lines[1], cscol)
-    lines[#lines] = string.sub(lines[#lines], 1, cecol)
+-- Send a quick message to the agent
+vim.api.nvim_create_user_command("AmpSend", function(opts)
+  local message = opts.args
+  if message == "" then
+    print("Please provide a message to send")
+    return
   end
-  local code = table.concat(lines, "\n")
-  
-  vim.ui.input({ prompt = "Amp prompt: " }, function(prompt)
-    if prompt and prompt ~= "" then
-      require("amp").send_to_amp(prompt .. "\n\n```\n" .. code .. "\n```")
-    end
-  end)
-end, { desc = "Amp: Send selection with prompt" })
 
-map("v", "<leader>ai", function()
-  require("amp").send_to_amp()
-end, { desc = "Amp: Send selection to Amp" })
+  local amp_message = require("amp.message")
+  amp_message.send_message(message)
+end, {
+  nargs = "*",
+  desc = "Send a message to Amp",
+})
 
+-- Send entire buffer contents
+vim.api.nvim_create_user_command("AmpSendBuffer", function(opts)
+  local buf = vim.api.nvim_get_current_buf()
+  local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+  local content = table.concat(lines, "\n")
+
+  local amp_message = require("amp.message")
+  amp_message.send_message(content)
+end, {
+  nargs = "?",
+  desc = "Send current buffer contents to Amp",
+})
+
+-- Add selected text directly to prompt
+vim.api.nvim_create_user_command("AmpPromptSelection", function(opts)
+  local lines = vim.api.nvim_buf_get_lines(0, opts.line1 - 1, opts.line2, false)
+  local text = table.concat(lines, "\n")
+
+  local amp_message = require("amp.message")
+  amp_message.send_to_prompt(text)
+end, {
+  range = true,
+  desc = "Add selected text to Amp prompt",
+})
+
+-- Add file+selection reference to prompt
+vim.api.nvim_create_user_command("AmpPromptRef", function(opts)
+  local bufname = vim.api.nvim_buf_get_name(0)
+  if bufname == "" then
+    print("Current buffer has no filename")
+    return
+  end
+
+  local relative_path = vim.fn.fnamemodify(bufname, ":.")
+  local ref = "@" .. relative_path
+  if opts.line1 ~= opts.line2 then
+    ref = ref .. "#L" .. opts.line1 .. "-" .. opts.line2
+  elseif opts.line1 > 1 then
+    ref = ref .. "#L" .. opts.line1
+  end
+
+  local amp_message = require("amp.message")
+  amp_message.send_to_prompt(ref)
+end, {
+  range = true,
+  desc = "Add file reference (with selection) to Amp prompt",
+})

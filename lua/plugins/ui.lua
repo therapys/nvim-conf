@@ -53,10 +53,12 @@ return {
 
     -- Use the NEW spec format for groups
     wk.add({
-      { "<leader>f", group = "find" },       -- was "+file" (old format)
+      { "<leader>f", group = "find" },
       { "<leader>g", group = "git" },
       { "<leader>l", group = "lsp" },
       { "<leader>t", group = "telescope" },
+      { "<leader>x", group = "trouble/diagnostics" },
+      { "<leader>c", group = "code" },
     }, { mode = "n" })
   end,
 },

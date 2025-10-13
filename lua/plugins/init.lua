@@ -8,8 +8,10 @@ return {
   { import = "plugins.format" },      -- conform, nvim-lint
   { import = "plugins.ui" },          -- lualine, comment, autopairs, gitsigns
   { import = "plugins.files" },       -- neo-tree (left)
-  { import = "plugins.outline" },     -- outline.nvim (right)
   { import = "plugins.colors" },      -- onedark
   { import = "plugins.agent" },
+  { import = "plugins.golang"},
+  { import = "plugins.trouble"},
+  { import = "plugins.multicursor"},
 }
 

@@ -1,0 +1,87 @@
+return {
+  {
+    "folke/trouble.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    cmd = "Trouble",
+    keys = {
+      { "<leader>q", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics (Trouble)" },
+      { "<leader>Q", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Buffer Diagnostics (Trouble)" },
+      { "<leader>o", "<cmd>Trouble symbols toggle focus=false<cr>", desc = "Symbols (Trouble)" },
+      { "<leader>cl", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", desc = "LSP Definitions / references / ... (Trouble)" },
+      { "<leader>xL", "<cmd>Trouble loclist toggle<cr>", desc = "Location List (Trouble)" },
+      { "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix List (Trouble)" },
+      { "[q", function() require("trouble").prev({ skip_groups = true, jump = true }) end, desc = "Previous Trouble" },
+      { "]q", function() require("trouble").next({ skip_groups = true, jump = true }) end, desc = "Next Trouble" },
+    },
+    opts = {
+      auto_close = false,
+      auto_open = false,
+      auto_preview = true,
+      auto_refresh = true,
+      focus = true,
+      keys = {
+        ["["] = false,
+        ["]"] = false,
+      },
+      modes = {
+        diagnostics = {
+          mode = "diagnostics",
+          preview = {
+            type = "split",
+            relative = "win",
+            position = "right",
+            size = 0.4,
+          },
+        },
+      },
+    },
+  },
+  {
+    "folke/todo-comments.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    event = { "BufReadPost", "BufNewFile" },
+    keys = {
+      { "]t", function() require("todo-comments").jump_next() end, desc = "Next TODO" },
+      { "[t", function() require("todo-comments").jump_prev() end, desc = "Previous TODO" },
+      { "<leader>xt", "<cmd>Trouble todo toggle<cr>", desc = "TODO (Trouble)" },
+      { "<leader>xT", "<cmd>Trouble todo toggle filter = {tag = {TODO,FIX,FIXME}}<cr>", desc = "TODO/Fix/Fixme (Trouble)" },
+      { "<leader>ft", "<cmd>TodoTelescope<cr>", desc = "Find TODOs" },
+    },
+    opts = {
+      signs = true,
+      sign_priority = 8,
+      keywords = {
+        FIX = { icon = " ", color = "error", alt = { "FIXME", "BUG", "FIXIT", "ISSUE" } },
+        TODO = { icon = " ", color = "info" },
+        HACK = { icon = " ", color = "warning" },
+        WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX" } },
+        PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
+        NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
+        TEST = { icon = "⏲ ", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
+      },
+      highlight = {
+        multiline = true,
+        multiline_pattern = "^.",
+        multiline_context = 10,
+        before = "",
+        keyword = "wide",
+        after = "fg",
+        pattern = [[.*<(KEYWORDS)\s*:]],
+        comments_only = true,
+        max_line_len = 400,
+        exclude = {},
+      },
+      search = {
+        command = "rg",
+        args = {
+          "--color=never",
+          "--no-heading",
+          "--with-filename",
+          "--line-number",
+          "--column",
+        },
+        pattern = [[\b(KEYWORDS):]],
+      },
+    },
+  },
+}
