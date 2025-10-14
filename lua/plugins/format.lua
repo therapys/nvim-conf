@@ -21,9 +21,13 @@ return {
     config = function()
       local lint = require("lint")
       lint.linters_by_ft = {
-        python = { "ruff" },
         go = { "golangcilint" },
       }
+      
+      -- Only add ruff if it's available
+      if vim.fn.executable("ruff") == 1 then
+        lint.linters_by_ft.python = { "ruff" }
+      end
       
       -- Only add hadolint if it's available
       if vim.fn.executable("hadolint") == 1 then
