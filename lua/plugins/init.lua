@@ -13,5 +13,6 @@ return {
   { import = "plugins.golang"},
   { import = "plugins.trouble"},
   { import = "plugins.multicursor"},
+  { import = "plugins.git"},          -- diffview, git-conflict
 }
 
