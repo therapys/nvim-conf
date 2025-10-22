@@ -55,7 +55,7 @@ vim.o.termguicolors = true
 
 -- Renders spaces as "·"
 vim.opt.list = true
-vim.opt.listchars = vim.opt.listchars + "space:·"
+vim.opt.listchars = vim.opt.listchars + "space:·" + "tab:│ "
 
 -- Do not create swap files as this config autosaving everything on disk
 vim.opt.swapfile = false

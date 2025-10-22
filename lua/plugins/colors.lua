@@ -1,4 +1,4 @@
-local theme = "cyberdream"
+local theme = "inferno"
 
 local function get_goose_lualine_theme()
   if theme == "catppuccin" then
@@ -18,6 +18,25 @@ local function get_goose_lualine_theme()
         a = { fg = catpuccin.text, bg = catpuccin.surface0 },
         b = { fg = catpuccin.text, bg = catpuccin.surface0 },
         c = { fg = catpuccin.text, bg = catpuccin.surface0 },
+      },
+    }
+  elseif theme == "gruvbox" then
+    local colors = require("gruvbox").palette
+    return {
+      normal = {
+        a = { fg = colors.dark0, bg = colors.neutral_purple },
+        b = { fg = colors.neutral_purple, bg = colors.dark1 },
+        c = { fg = colors.light4, bg = colors.dark1 },
+      },
+
+      insert = { a = { fg = colors.dark0, bg = colors.neutral_blue, gui = "bold" } },
+      visual = { a = { fg = colors.dark0, bg = colors.neutral_aqua } },
+      replace = { a = { fg = colors.dark0, bg = colors.neutral_green } },
+
+      inactive = {
+        a = { fg = colors.light4, bg = colors.dark2 },
+        b = { fg = colors.light4, bg = colors.dark2 },
+        c = { fg = colors.light4, bg = colors.dark2 },
       },
     }
   end
@@ -72,6 +91,28 @@ return {
     end,
   },
   {
+    "ellisonleao/gruvbox.nvim",
+    enabled = theme == "gruvbox",
+    priority = 1000,
+    config = true,
+    opts = {
+      contrast = "hard",
+      palette_overrides = {},
+      overrides = {},
+    },
+    init = function()
+      vim.cmd "colorscheme gruvbox"
+      
+      local colors = require("gruvbox").palette
+      vim.api.nvim_set_hl(0, "EdgyWinBar", { bg = colors.dark0_hard })
+      vim.api.nvim_set_hl(0, "EdgyNormal", { bg = colors.dark0_hard })
+      vim.api.nvim_set_hl(0, "LspInlayHint", { bg = colors.dark1, fg = colors.gray })
+      vim.api.nvim_set_hl(0, "WinSeparator", { bg = colors.dark0_hard, fg = colors.dark2 })
+      vim.api.nvim_set_hl(0, "TreesitterContextBottom", { sp = colors.dark2, underline = false })
+      vim.api.nvim_set_hl(0, "TreesitterContextLineNumberBottom", { sp = colors.dark2, underline = false })
+    end,
+  },
+  {
     "xiyaowong/transparent.nvim",
     lazy = false,
     opts = {},
@@ -111,6 +152,17 @@ return {
       vim.api.nvim_set_hl(0, "TreesitterContextLineNumber", { bg = "#232429" })
       vim.api.nvim_set_hl(0, "TreesitterContextBottom", { bg = "#232429", underline = true })
       vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#ffffff" })
+    end,
+  },
+  {
+    "local/inferno",
+    dir = "~/.config/nvim/lua/colors",
+    enabled = theme == "inferno",
+    lazy = false,
+    priority = 1000,
+    config = function()
+      require("colors.inferno").setup()
+      vim.opt.termguicolors = true
     end,
   },
   {

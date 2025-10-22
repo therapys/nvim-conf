@@ -66,15 +66,7 @@ return {
   -- indentation guides
   {
     "lukas-reineke/indent-blankline.nvim",
-    main = "ibl",   -- new module name
-    event = { "BufReadPost", "BufNewFile" },
-    opts = {
-      indent = { char = "│" },
-      scope = { enabled = true },
-    },
-    config = function(_, opts)
-      require("ibl").setup(opts)
-    end,
+    enabled = false,
   },
   {
     "akinsho/toggleterm.nvim",
