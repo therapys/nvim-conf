@@ -1,4 +1,4 @@
-local theme = "inferno"
+local theme = "gruvbox"
 
 local function get_goose_lualine_theme()
   if theme == "catppuccin" then
@@ -39,6 +39,8 @@ local function get_goose_lualine_theme()
         c = { fg = colors.light4, bg = colors.dark2 },
       },
     }
+  elseif theme == "tokyonight" then
+    return "tokyonight"
   end
 
   return "auto"
@@ -124,7 +126,10 @@ return {
     enabled = theme == "tokyonight",
     opts = {
       transparent = true,
-      sidebars = "transparent",
+      styles = {
+        sidebars = "transparent",
+        floats = "transparent",
+      },
     },
     init = function()
       vim.cmd "colorscheme tokyonight"
