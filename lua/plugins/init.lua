@@ -12,6 +12,7 @@ return {
   { import = "plugins.agent" },
   { import = "plugins.golang"},
   { import = "plugins.trouble"},
+  { import = "plugins.tmux"},
   { import = "plugins.multicursor"},
   { import = "plugins.git"},          -- diffview, git-conflict
 }
