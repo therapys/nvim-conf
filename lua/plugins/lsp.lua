@@ -51,6 +51,70 @@ return {
     dependencies = {
       "b0o/schemastore.nvim",
     },
+    keys = {
+      {
+        "gi",
+        function()
+          local bufnr = vim.api.nvim_get_current_buf()
+          if #vim.lsp.get_clients({ bufnr = bufnr }) == 0 then
+            return vim.cmd.normal("gi")
+          end
+          local has_impl = false
+          for _, c in pairs(vim.lsp.get_clients({ bufnr = bufnr })) do
+            if c.server_capabilities and c.server_capabilities.implementationProvider then
+              has_impl = true
+              break
+            end
+          end
+          local ok, tb = pcall(require, "telescope.builtin")
+          if has_impl then
+            if ok then tb.lsp_implementations() else vim.lsp.buf.implementation() end
+          else
+            if ok then tb.lsp_references({ include_declaration = false }) else vim.lsp.buf.definition() end
+          end
+        end,
+        desc = "LSP: Implementations (smart fallback)"
+      },
+      {
+        "gd",
+        function()
+          if #vim.lsp.get_clients({ bufnr = 0 }) == 0 then
+            return vim.cmd.normal("gd")
+          end
+          local ok, tb = pcall(require, "telescope.builtin")
+          if ok then tb.lsp_definitions() else vim.lsp.buf.definition() end
+        end,
+        desc = "LSP: Definitions"
+      },
+      {
+        "gD",
+        function()
+          if #vim.lsp.get_clients({ bufnr = 0 }) == 0 then
+            return vim.cmd.normal("gD")
+          end
+          vim.lsp.buf.declaration()
+        end,
+        desc = "LSP: Declaration"
+      },
+      {
+        "gT",
+        function()
+          if #vim.lsp.get_clients({ bufnr = 0 }) == 0 then return end
+          local ok, tb = pcall(require, "telescope.builtin")
+          if ok then tb.lsp_type_definitions() else vim.lsp.buf.type_definition() end
+        end,
+        desc = "LSP: Type definition"
+      },
+      {
+        "gr",
+        function()
+          if #vim.lsp.get_clients({ bufnr = 0 }) == 0 then return end
+          local ok, tb = pcall(require, "telescope.builtin")
+          if ok then tb.lsp_references() else vim.lsp.buf.references() end
+        end,
+        desc = "LSP: References"
+      },
+    },
     config = function()
       -- Base capabilities (augmented by nvim-cmp if present)
       local capabilities = vim.lsp.protocol.make_client_capabilities()

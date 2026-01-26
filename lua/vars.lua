@@ -53,10 +53,6 @@ vim.o.completeopt = "menuone,noselect"
 -- set termguicolors to enable highlight groups
 vim.o.termguicolors = true
 
--- Renders spaces as "·"
-vim.opt.list = true
-vim.opt.listchars = vim.opt.listchars + "space:·" + "tab:│ "
-
 -- Do not create swap files as this config autosaving everything on disk
 vim.opt.swapfile = false
 -- Set terminal tab title to `filename (cwd)`

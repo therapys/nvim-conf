@@ -12,6 +12,8 @@ return {
       { "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix List (Trouble)" },
       { "[q", function() require("trouble").prev({ skip_groups = true, jump = true }) end, desc = "Previous Trouble" },
       { "]q", function() require("trouble").next({ skip_groups = true, jump = true }) end, desc = "Next Trouble" },
+      { "[d", vim.diagnostic.goto_prev, desc = "Previous diagnostic" },
+      { "]d", vim.diagnostic.goto_next, desc = "Next diagnostic" },
     },
     opts = {
       auto_close = false,

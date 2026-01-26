@@ -29,6 +29,32 @@ return {
       { "<leader>fS", "<cmd>Telescope lsp_workspace_symbols<cr>", desc = "Workspace symbols" },
       { "<leader>fd", "<cmd>Telescope diagnostics<cr>", desc = "Diagnostics" },
       { "<leader>fp", function() require("telescope").extensions.file_browser.file_browser({ path = "%:p:h" }) end, desc = "File browser" },
+      {
+        "<leader>fw",
+        function()
+          require("telescope.builtin").live_grep({ default_text = vim.fn.expand("<cword>") })
+        end,
+        desc = "Grep word under cursor"
+      },
+      {
+        "<leader>fg",
+        function()
+          local _, csrow, cscol = unpack(vim.fn.getpos("'<"))
+          local _, cerow, cecol = unpack(vim.fn.getpos("'>"))
+          local text
+          if csrow == cerow then
+            text = string.sub(vim.fn.getline(csrow), cscol, cecol)
+          else
+            local lines = vim.fn.getline(csrow, cerow)
+            lines[1] = string.sub(lines[1], cscol)
+            lines[#lines] = string.sub(lines[#lines], 1, cecol)
+            text = table.concat(lines, "\n")
+          end
+          require("telescope.builtin").live_grep({ default_text = text })
+        end,
+        mode = "v",
+        desc = "Grep visual selection"
+      },
     },
     config = function()
       local telescope = require("telescope")

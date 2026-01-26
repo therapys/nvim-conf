@@ -10,24 +10,25 @@ return {
       { "<leader>gv", "<cmd>Gvdiffsplit<cr>", desc = "Vertical Diff" },
     },
   },
+
   {
     "sindrets/diffview.nvim",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    cmd = { "DiffviewOpen", "DiffviewFileHistory", "DiffviewClose" },
+    cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFocusFiles", "DiffviewRefresh", "DiffviewFileHistory" },
     keys = {
-      { "<leader>gd", "<cmd>DiffviewOpen<cr>", desc = "Open Diffview" },
+      { "<leader>gd", "<cmd>DiffviewOpen<cr>", desc = "Diffview Open" },
+      { "<leader>gD", "<cmd>DiffviewClose<cr>", desc = "Diffview Close" },
       { "<leader>gh", "<cmd>DiffviewFileHistory %<cr>", desc = "File History" },
-      { "<leader>gc", "<cmd>DiffviewClose<cr>", desc = "Close Diffview" },
+      { "<leader>gH", "<cmd>DiffviewFileHistory<cr>", desc = "Branch History" },
     },
     opts = {
       enhanced_diff_hl = true,
       view = {
-        merge_tool = {
-          layout = "diff3_mixed",
-        },
+        default = { layout = "diff2_horizontal" },
+        merge_tool = { layout = "diff3_horizontal" },
       },
     },
   },
+
   {
     "akinsho/git-conflict.nvim",
     version = "*",

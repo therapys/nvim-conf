@@ -56,9 +56,14 @@ return {
       { "<leader>f", group = "find" },
       { "<leader>g", group = "git" },
       { "<leader>l", group = "lsp" },
-      { "<leader>t", group = "telescope" },
+      { "<leader>t", group = "tabs/terminal" },
       { "<leader>x", group = "trouble/diagnostics" },
       { "<leader>c", group = "code" },
+      { "<leader>m", group = "markdown" },
+      { "<leader>b", group = "buffers" },
+      { "<leader>s", group = "search/replace" },
+      { "<leader>q", group = "session/quit" },
+      { "<leader>a", group = "ai/claude" },
     }, { mode = "n" })
   end,
 },
@@ -71,6 +76,16 @@ return {
   {
     "akinsho/toggleterm.nvim",
     version = "*",
+    keys = {
+      { "<leader>tt", desc = "Toggle terminal" },
+      { "<leader>ts", "<cmd>split | terminal<CR>", desc = "Terminal split" },
+      { "<leader>tv", "<cmd>vsplit | terminal<CR>", desc = "Terminal vsplit" },
+      { "<leader>tn", "<cmd>tabnew<CR>", desc = "Tab: New" },
+      { "<leader>tc", "<cmd>tabclose<CR>", desc = "Tab: Close" },
+      { "<leader>to", "<cmd>tabonly<CR>", desc = "Tab: Close others" },
+      { "<leader>tl", "<cmd>tabnext<CR>", desc = "Tab: Next" },
+      { "<leader>th", "<cmd>tabprevious<CR>", desc = "Tab: Previous" },
+    },
     opts = {
       open_mapping = [[<leader>tt]], -- toggle with <leader>tt
       start_in_insert = true,
