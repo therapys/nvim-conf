@@ -23,5 +23,6 @@ return {
   { import = "plugins.session"},      -- persistence
   { import = "plugins.undo"},         -- undotree
   { import = "plugins.bufferline"},   -- bufferline
+  { import = "plugins.csv"},          -- csv.vim
 }
 

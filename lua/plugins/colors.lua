@@ -1,23 +1,58 @@
 -- Gruvbox only: theme setup and plugin coloring
 
+-- Detect macOS system theme
+local function get_system_theme()
+  local handle = io.popen("defaults read -g AppleInterfaceStyle 2>/dev/null")
+  if handle then
+    local result = handle:read("*a")
+    handle:close()
+    if result:match("Dark") then
+      return "dark"
+    end
+  end
+  return "light"
+end
+
 local function apply_ui_highlights()
-  -- Get gruvbox colors
-  local colors = {
-    bg0 = vim.g.terminal_color_0 or "#282828",
-    bg1 = "#3c3836",
-    bg2 = "#504945",
-    bg3 = "#665c54",
-    fg0 = vim.g.terminal_color_7 or "#ebdbb2",
-    fg1 = "#ebdbb2",
-    grey = "#928374",
-    red = vim.g.terminal_color_1 or "#fb4934",
-    green = vim.g.terminal_color_2 or "#b8bb26",
-    yellow = vim.g.terminal_color_3 or "#fabd2f",
-    blue = vim.g.terminal_color_4 or "#83a598",
-    purple = vim.g.terminal_color_5 or "#d3869b",
-    aqua = vim.g.terminal_color_6 or "#8ec07c",
-    orange = "#fe8019",
-  }
+  local is_light = vim.o.background == "light"
+
+  -- Get gruvbox colors based on background
+  local colors
+  if is_light then
+    colors = {
+      bg0 = "#fbf1c7",
+      bg1 = "#ebdbb2",
+      bg2 = "#d5c4a1",
+      bg3 = "#bdae93",
+      fg0 = "#282828",
+      fg1 = "#3c3836",
+      grey = "#928374",
+      red = "#9d0006",
+      green = "#79740e",
+      yellow = "#b57614",
+      blue = "#076678",
+      purple = "#8f3f71",
+      aqua = "#427b58",
+      orange = "#af3a03",
+    }
+  else
+    colors = {
+      bg0 = vim.g.terminal_color_0 or "#282828",
+      bg1 = "#3c3836",
+      bg2 = "#504945",
+      bg3 = "#665c54",
+      fg0 = vim.g.terminal_color_7 or "#ebdbb2",
+      fg1 = "#ebdbb2",
+      grey = "#928374",
+      red = vim.g.terminal_color_1 or "#fb4934",
+      green = vim.g.terminal_color_2 or "#b8bb26",
+      yellow = vim.g.terminal_color_3 or "#fabd2f",
+      blue = vim.g.terminal_color_4 or "#83a598",
+      purple = vim.g.terminal_color_5 or "#d3869b",
+      aqua = vim.g.terminal_color_6 or "#8ec07c",
+      orange = "#fe8019",
+    }
+  end
 
   local set = vim.api.nvim_set_hl
 
@@ -98,6 +133,9 @@ return {
       vim.g.gruvbox_italic = 1
       vim.g.gruvbox_bold = 1
       vim.g.gruvbox_invert_selection = 0  -- Disable selection inversion
+
+      -- Follow system theme
+      vim.o.background = get_system_theme()
 
       vim.cmd.colorscheme "gruvbox"
       apply_ui_highlights()
