@@ -20,37 +20,37 @@ local function apply_ui_highlights()
   local colors
   if is_light then
     colors = {
-      bg0 = "#fbf1c7",
-      bg1 = "#ebdbb2",
-      bg2 = "#d5c4a1",
-      bg3 = "#bdae93",
-      fg0 = "#282828",
-      fg1 = "#3c3836",
+      bg0 = "#f9f5d7",
+      bg1 = "#f5edca",
+      bg2 = "#f3eac7",
+      bg3 = "#eee0b7",
+      fg0 = "#654735",
+      fg1 = "#4f3829",
       grey = "#928374",
-      red = "#9d0006",
-      green = "#79740e",
-      yellow = "#b57614",
-      blue = "#076678",
-      purple = "#8f3f71",
-      aqua = "#427b58",
-      orange = "#af3a03",
+      red = "#c14a4a",
+      green = "#6c782e",
+      yellow = "#b47109",
+      blue = "#45707a",
+      purple = "#945e80",
+      aqua = "#4c7a5d",
+      orange = "#c35e0a",
     }
   else
     colors = {
       bg0 = vim.g.terminal_color_0 or "#282828",
-      bg1 = "#3c3836",
-      bg2 = "#504945",
-      bg3 = "#665c54",
-      fg0 = vim.g.terminal_color_7 or "#ebdbb2",
-      fg1 = "#ebdbb2",
+      bg1 = "#32302f",
+      bg2 = "#45403d",
+      bg3 = "#5a524c",
+      fg0 = vim.g.terminal_color_7 or "#d4be98",
+      fg1 = "#ddc7a1",
       grey = "#928374",
-      red = vim.g.terminal_color_1 or "#fb4934",
-      green = vim.g.terminal_color_2 or "#b8bb26",
-      yellow = vim.g.terminal_color_3 or "#fabd2f",
-      blue = vim.g.terminal_color_4 or "#83a598",
+      red = vim.g.terminal_color_1 or "#ea6962",
+      green = vim.g.terminal_color_2 or "#a9b665",
+      yellow = vim.g.terminal_color_3 or "#d8a657",
+      blue = vim.g.terminal_color_4 or "#7daea3",
       purple = vim.g.terminal_color_5 or "#d3869b",
-      aqua = vim.g.terminal_color_6 or "#8ec07c",
-      orange = "#fe8019",
+      aqua = vim.g.terminal_color_6 or "#89b482",
+      orange = "#e78a4e",
     }
   end
 
@@ -125,19 +125,22 @@ return {
   },
 
   {
-    "morhetz/gruvbox",
+    "sainnhe/gruvbox-material",
     lazy = false,
     priority = 1000,
     config = function()
-      -- Set gruvbox options before loading
-      vim.g.gruvbox_italic = 1
-      vim.g.gruvbox_bold = 1
-      vim.g.gruvbox_invert_selection = 0  -- Disable selection inversion
+      -- Set gruvbox-material options before loading
+      vim.g.gruvbox_material_enable_italic = 1
+      vim.g.gruvbox_material_enable_bold = 1
+      vim.g.gruvbox_material_foreground = "material"
+      vim.g.gruvbox_material_background = "medium"
+      vim.g.gruvbox_material_ui_contrast = "high"
+      vim.g.gruvbox_material_invert_selection = 0  -- Disable selection inversion
 
       -- Follow system theme
       vim.o.background = get_system_theme()
 
-      vim.cmd.colorscheme "gruvbox"
+      vim.cmd.colorscheme "gruvbox-material"
       apply_ui_highlights()
     end,
   },
@@ -179,7 +182,7 @@ return {
           disabled_filetypes = {
             statusline = { "alpha", "NvimTree", "trouble", "Outline" },
           },
-          theme = "gruvbox",
+          theme = "gruvbox-material",
           component_separators = "|",
           section_separators = "",
         },

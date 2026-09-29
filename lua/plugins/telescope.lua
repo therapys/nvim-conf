@@ -1,7 +1,7 @@
 return {
   {
     "nvim-telescope/telescope.nvim",
-    version = "0.1.8",
+    branch = "master",
     dependencies = {
       "nvim-lua/plenary.nvim",
       {
@@ -60,11 +60,6 @@ return {
       local telescope = require("telescope")
       local actions = require("telescope.actions")
       local lga_actions = require("telescope-live-grep-args.actions")
-
-      -- Fix deprecated jump_to_location
-      vim.lsp.util.jump_to_location = function(location, offset_encoding, reuse_win)
-        vim.lsp.util.show_document(location, offset_encoding, { reuse_win = reuse_win, focus = true })
-      end
 
       telescope.setup({
         defaults = {

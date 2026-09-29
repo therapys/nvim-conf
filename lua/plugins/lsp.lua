@@ -3,7 +3,7 @@ return {
   -- Mason (manages external LSP/DAP/formatters)
   {
     "williamboman/mason.nvim",
-    event = "VeryLazy",
+    lazy = false,
     config = function()
       require("mason").setup()
     end,
@@ -22,6 +22,9 @@ return {
         "prettier",
         "yamlfmt",
         "jq",
+        -- Required by nvim-treesitter to generate parsers whose grammar isn't
+        -- pre-generated (e.g. swift): it shells out to `tree-sitter generate/build`.
+        "tree-sitter-cli",
       },
     },
   },
@@ -29,7 +32,7 @@ return {
   -- Mason bridge to ensure LSP servers are installed
   {
     "williamboman/mason-lspconfig.nvim",
-    event = "VeryLazy",
+    lazy = false,
     dependencies = { "williamboman/mason.nvim" },
     opts = {
       ensure_installed = {
@@ -187,6 +190,13 @@ return {
           cmd = { "clangd", "--offset-encoding=utf-16" },
         },
         cmake = {},
+        -- Swift / Objective-C via sourcekit-lsp (ships with Xcode, NOT installable
+        -- via Mason). The bundled lspconfig `sourcekit` config supplies cmd,
+        -- root_dir (Package.xcodeproj/xcworkspace/Package.swift/.git) and language ids.
+        -- Scope it to swift only so it doesn't double-attach with clangd on c/cpp/objc.
+        sourcekit = {
+          filetypes = { "swift" },
+        },
         gopls = {
           settings = {
             gopls = {

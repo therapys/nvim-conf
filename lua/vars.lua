@@ -2,6 +2,12 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 vim.g.kitty_fast_forwarded_modifiers = "super"
 
+-- Ensure fnm-managed node is available to LSP servers
+local fnm_node = vim.fn.expand("~/.local/share/fnm/aliases/default/bin")
+if vim.uv.fs_stat(fnm_node) then
+  vim.env.PATH = fnm_node .. ":" .. vim.env.PATH
+end
+
 -- disable netrw at the very start of your init.lua
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1

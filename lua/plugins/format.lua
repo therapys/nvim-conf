@@ -12,6 +12,16 @@ return {
         json = { "jq" },
         yaml = { "yamlfmt" },
         ["yaml.docker-compose"] = { "prettier" },
+        swift = { "swift_format" },
+      },
+      formatters = {
+        -- Apple's swift-format ships with the Xcode toolchain but isn't on the
+        -- plain PATH, so drive it via the `swift format -` subcommand (stdin).
+        swift_format = {
+          command = "swift",
+          args = { "format", "-" },
+          stdin = true,
+        },
       },
     },
   },

@@ -6,24 +6,41 @@ return {
     dependencies = {
       "nvim-treesitter/nvim-treesitter-textobjects",
     },
-    config = function()
+    config = function(plugin)
+      -- Add runtime/ subdir to rtp so query files (highlights, etc.) are found
+      vim.opt.rtp:append(plugin.dir .. "/runtime")
+
       -- Ensure parsers are installed (async, runs in background)
+      local ensure_installed = {
+        "lua", "python", "bash", "json", "yaml", "javascript", "html",
+        "markdown", "markdown_inline", "latex",
+        "go", "gomod", "gowork", "gosum", "swift",
+      }
       vim.api.nvim_create_autocmd("User", {
         pattern = "LazyDone",
         once = true,
         callback = function()
-          require("nvim-treesitter").install({ "lua", "python", "bash", "json", "yaml", "markdown", "go", "gomod", "gowork", "gosum" })
+          require("nvim-treesitter").install(ensure_installed)
         end,
       })
 
       -- Enable treesitter highlighting and indentation for supported filetypes
+      local function try_enable_ts(buf)
+        if pcall(vim.treesitter.start, buf) then
+          vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        end
+      end
+
       vim.api.nvim_create_autocmd("FileType", {
-        callback = function(ev)
-          if pcall(vim.treesitter.start, ev.buf) then
-            vim.bo[ev.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-          end
-        end,
+        callback = function(ev) try_enable_ts(ev.buf) end,
       })
+
+      -- Enable for buffers already loaded before this plugin (FileType fired before BufReadPost)
+      for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+        if vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].filetype ~= "" then
+          try_enable_ts(buf)
+        end
+      end
 
       -- Textobjects config
       require("nvim-treesitter-textobjects").setup({

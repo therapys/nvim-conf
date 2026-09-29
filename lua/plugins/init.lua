@@ -23,6 +23,6 @@ return {
   { import = "plugins.session"},      -- persistence
   { import = "plugins.undo"},         -- undotree
   { import = "plugins.bufferline"},   -- bufferline
-  { import = "plugins.csv"},          -- csv.vim
+  { import = "plugins.csv"},          -- csvview.nvim + rainbow_csv.nvim
 }
 

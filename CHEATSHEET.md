@@ -97,7 +97,31 @@
 
 ---
 
+## 📖 Markdown
 
+Markdown files get inline rendering, Markdown-aware editing, wrapped display, and an optional browser preview.
+
+### Reading
+- `<leader>mr` - Toggle rendered/raw Markdown in the current buffer
+- `<leader>ms` - Open/close an in-Neovim side preview
+- `<leader>mp` - Toggle browser preview (renders Mermaid and KaTeX)
+- `<leader>md` - Open the Mermaid diagram under the cursor in its own tab
+- `]h` / `[h` - Next/previous heading
+- `gf` - Follow the link under the cursor
+- `<leader>z` - Toggle distraction-free Zen mode
+
+### Editing
+- `<leader>mx` - Toggle checkbox (normal or visual mode)
+- `<leader>ml` - Create a link from the word/selection
+- `<leader>my` - Create a link using the clipboard as its URL
+- `<leader>mt` - Format the table under the cursor
+- `<leader>mn` - Renumber the current ordered list
+
+Inline rendering is active in normal mode and reveals Markdown source while inserting.
+Mermaid code blocks render automatically as images after leaving insert mode.
+Marksman supplies document symbols, link completion, and link diagnostics.
+
+---
 
 ## 🐹 Go-specific (go.nvim)
 
